@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Créditos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#08080b;
+    --panel:#131318;
+    --glass:rgba(255,255,255,0.05);
+    --glass-border:rgba(255,255,255,0.12);
+    --accent:#ff2740;   /* vermelho — Luxx */
+    --accent-2:#f2c14e; /* amarelo — Toregui */
+    --accent-3:#8b3ef7; /* roxo — Hades */
+    --chrome-1:#e8e8f0;
+    --chrome-2:#8890a0;
+    --text:#f3f3f6;
+    --text-dim:#9797a3;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html,body{ height:100%; }
+  body{
+    background:
+      radial-gradient(circle at 12% 15%, rgba(255,110,199,0.28) 0%, transparent 42%),
+      radial-gradient(circle at 88% 10%, rgba(139,62,247,0.32) 0%, transparent 46%),
+      radial-gradient(circle at 25% 90%, rgba(242,193,78,0.22) 0%, transparent 46%),
+      radial-gradient(circle at 92% 85%, rgba(255,39,64,0.26) 0%, transparent 42%),
+      linear-gradient(160deg, #16101f 0%, #0a0a10 55%, #050507 100%);
+    background-attachment:fixed;
+    color:var(--text);
+    font-family:'Space Grotesk', sans-serif;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    overflow-x:hidden;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:0;
+    background-image:radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px);
+    background-size:24px 24px;
+    pointer-events:none;
+  }
+  a{ color:inherit; text-decoration:none; }
+  ::selection{ background:var(--accent); color:#fff; }
+
+ /* ============ HEADER ============ */
+header{
+    position:sticky;
+    top:0;
+    z-index:40;
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:flex-start;
+    padding:1.1rem 2.4rem;
+    background:#0b0b0d;
+    border-bottom:4px solid #fff;
+}
+
+.back-link{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.7rem;
+    font-weight:700;
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    color:#f3f3f3;
+    display:inline-flex;
+    align-items:center;
+    gap:0.5rem;
+    padding:0.5rem 1rem;
+    border:2px solid #f3f3f3;
+    background:#0b0b0d;
+    transform:skew(-12deg);
+    transition:color .2s ease,
+               background .2s ease,
+               border-color .2s ease,
+               gap .2s ease;
+}
+
+.back-link span{
+    display:inline-block;
+    transform:skew(12deg);
+}
+
+.back-link::before{
+    content:"←";
+    display:inline-block;
+    transform:skew(12deg);
+}
+
+.back-link:hover{
+    color:#0b0b0d;
+    background:#e0102a;
+    border-color:#e0102a;
+    gap:.75rem;
+}
+  /* ============ MAIN ============ */
+  main{
+    position:relative;
+    z-index:1;
+    width:100%;
+    max-width:900px;
+    padding:3.5rem 1.6rem 5rem;
+  }
+
+  /* ============ HERO ============ */
+  .hero{
+    position:relative;
+    text-align:center;
+    padding:2rem 1rem 2.6rem;
+    margin-bottom:3rem;
+    isolation:isolate;
+    overflow:hidden;
+  }
+  .hero-shard{
+    position:absolute;
+    z-index:-1;
+    opacity:0.9;
+  }
+  .hero-shard.s1{
+    top:-10%; left:8%;
+    width:34%; height:150%;
+    background:linear-gradient(180deg, var(--accent), #7a0010);
+    clip-path:polygon(20% 0, 100% 8%, 78% 100%, 0 92%);
+    opacity:0.9;
+  }
+  .hero-shard.s2{
+    top:-20%; right:6%;
+    width:28%; height:160%;
+    background:linear-gradient(180deg, var(--accent-3), #2a0d55);
+    clip-path:polygon(15% 0, 100% 0, 85% 100%, 0 100%);
+    opacity:0.55;
+  }
+  .hero-halftone{
+    position:absolute; inset:-10%;
+    z-index:-1;
+    background-image:radial-gradient(rgba(255,255,255,0.55) 1px, transparent 1.4px);
+    background-size:7px 7px;
+    -webkit-mask-image:radial-gradient(ellipse 60% 60% at 50% 50%, #000 0%, transparent 75%);
+    mask-image:radial-gradient(ellipse 60% 60% at 50% 50%, #000 0%, transparent 75%);
+    opacity:0.14;
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.7rem;
+    letter-spacing:0.32em;
+    text-transform:uppercase;
+    color:var(--text-dim);
+    margin-bottom:1rem;
+  }
+  .hero h1{
+    font-family:'Anton', sans-serif;
+    font-size:clamp(3rem, 11vw, 5.6rem);
+    line-height:0.9;
+    text-transform:uppercase;
+    letter-spacing:0.01em;
+    background:linear-gradient(180deg, #ffffff 0%, #c9c9d4 45%, #7d7d8c 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    text-shadow:0 6px 30px rgba(255,39,64,0.35);
+    margin-bottom:0.8rem;
+  }
+  .hero .subhead{
+    color:var(--text-dim);
+    font-size:0.95rem;
+    max-width:46ch;
+    margin:0 auto;
+  }
+  .hero .subhead b{ color:#fff; }
+
+  /* ============ SECTION LABEL (Persona tag) ============ */
+  .section-label{
+    display:inline-block;
+    font-family:'Anton', sans-serif;
+    font-size:0.9rem;
+    letter-spacing:0.03em;
+    text-transform:uppercase;
+    color:#fff;
+    background:var(--accent);
+    padding:0.3rem 1rem;
+    margin-bottom:1.4rem;
+    transform:skew(-12deg);
+    clip-path:polygon(6% 0, 100% 0, 94% 100%, 0 100%);
+  }
+  .section-label span{ display:inline-block; transform:skew(12deg); }
+  .block{ margin-bottom:3.2rem; }
+
+  /* ============ CREATOR CARDS — fotos grandes ============ */
+  .creator-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:1.3rem;
+  }
+  .creator-card{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+  }
+  .photo-frame{
+    position:relative;
+    width:100%;
+    aspect-ratio:3/4;
+    border-radius:10px;
+    overflow:hidden;
+    isolation:isolate;
+    background:var(--panel);
+    box-shadow:0 14px 34px rgba(0,0,0,0.5);
+    transition:transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .photo-frame img,
+  .photo-frame .photo-bg{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    object-fit:cover;
+    background-size:cover;
+    background-position:center;
+  }
+  .photo-frame::before{
+    content:"";
+    position:absolute; inset:0;
+    z-index:2;
+    border-radius:10px;
+    border:2px solid var(--ring-color, var(--accent));
+    box-shadow:0 0 0 1px rgba(255,255,255,0.15) inset, 0 0 26px var(--ring-color, var(--accent));
+    pointer-events:none;
+    opacity:0.85;
+  }
+  .photo-frame::after{
+    content:"";
+    position:absolute; inset:0;
+    z-index:1;
+    background:linear-gradient(180deg, rgba(0,0,0,0) 45%, rgba(0,0,0,0.78) 100%);
+  }
+  .creator-card:nth-child(1) .photo-frame{ --ring-color:var(--accent-2); }
+  .creator-card:nth-child(2) .photo-frame{ --ring-color:var(--accent-3); }
+  .creator-card:nth-child(3) .photo-frame{ --ring-color:var(--accent); }
+  .creator-card:hover .photo-frame{ transform:translateY(-6px); box-shadow:0 22px 44px rgba(0,0,0,0.6); }
+
+  .photo-nameplate{
+    position:absolute;
+    left:0; right:0; bottom:0;
+    z-index:3;
+    padding:0.7rem 0.6rem 0.6rem;
+    text-align:left;
+  }
+  .photo-tag{
+    display:inline-block;
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.56rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:#0b0b0d;
+    background:var(--ring-color, var(--accent));
+    padding:0.1rem 0.45rem;
+    margin-bottom:0.35rem;
+    transform:skew(-8deg);
+  }
+  .creator-card:nth-child(2) .photo-tag{ color:#fff; }
+  .creator-card:nth-child(3) .photo-tag{ color:#fff; }
+  .photo-name{
+    font-family:'Anton', sans-serif;
+    font-size:1.3rem;
+    text-transform:uppercase;
+    color:#fff;
+    line-height:1;
+  }
+  .photo-system{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.6rem;
+    letter-spacing:0.04em;
+    color:rgba(255,255,255,0.75);
+    margin-top:0.2rem;
+  }
+
+  .creator-card.clickable{ cursor:pointer; }
+  .creator-card.clickable .photo-frame::before{ animation:ringPulse 2.4s ease-in-out infinite; }
+  @keyframes ringPulse{
+    0%,100%{ box-shadow:0 0 0 1px rgba(255,255,255,0.15) inset, 0 0 26px var(--ring-color); }
+    50%{ box-shadow:0 0 0 1px rgba(255,255,255,0.25) inset, 0 0 42px var(--ring-color); }
+  }
+  .click-hint{
+    margin-top:0.6rem;
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.62rem;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    color:var(--accent-3);
+  }
+
+  /* ============ GLASS PANEL — Descrição ============ */
+  .glass-panel{
+    background:var(--glass);
+    border:1px solid var(--glass-border);
+    border-radius:12px;
+    padding:1.3rem 1.4rem;
+    backdrop-filter:blur(6px);
+  }
+  .glass-panel p.copy{
+    color:var(--text-dim);
+    line-height:1.8;
+    font-size:0.95rem;
+  }
+  .glass-panel p.copy + p.copy{ margin-top:0.9rem; }
+  .glass-panel p.copy b{ color:#fff; font-weight:600; }
+
+  /* ============ INSPIRAÇÕES ============ */
+  .insp-list{ display:flex; flex-direction:column; }
+  .insp-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    gap:1rem;
+    padding:0.9rem 0.2rem;
+    border-bottom:1px solid var(--glass-border);
+  }
+  .insp-row:last-child{ border-bottom:none; }
+  .insp-row .insp-name{ font-weight:700; color:#fff; font-size:0.98rem; }
+  .insp-row .insp-note{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.65rem;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    color:var(--text-dim);
+    text-align:right;
+    white-space:nowrap;
+  }
+  .insp-row.template{ opacity:0.45; }
+  .insp-row.template .insp-name, .insp-row.template .insp-note{ color:var(--text-dim); }
+
+  /* ============ FOOTER ============ */
+  footer{
+    position:relative;
+    z-index:1;
+    padding:1.6rem;
+    text-align:center;
+    color:var(--text-dim);
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.68rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+  }
+
+  /* ============ RETRIGGER BUTTON (substitui a taskbar) ============ */
+  .ad-trigger{
+    position:fixed;
+    right:1.2rem; bottom:1.2rem;
+    z-index:45;
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:#fff;
+    background:linear-gradient(180deg, #2d6fb3, #12294f);
+    border:1px solid rgba(255,255,255,0.25);
+    border-radius:999px;
+    padding:0.65rem 1.1rem;
+    cursor:pointer;
+    box-shadow:0 8px 24px rgba(0,0,0,0.5);
+    transition:transform 0.15s ease, filter 0.15s ease;
+  }
+  .ad-trigger:hover{ transform:translateY(-2px); filter:brightness(1.15); }
+
+  /* ============================================================ */
+  /* ==============  POP-UPS — chrome Y2K / glass  =============== */
+  /* ============================================================ */
+  .popup-layer{ position:fixed; inset:0; z-index:50; pointer-events:none; }
+  .popup{
+    position:absolute;
+    width:280px;
+    border-radius:12px;
+    overflow:hidden;
+    background:rgba(20,20,26,0.85);
+    backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,0.14);
+    box-shadow:0 20px 45px rgba(0,0,0,0.55);
+    pointer-events:auto;
+    animation:popIn 0.28s cubic-bezier(.2,1.4,.4,1) both;
+  }
+  .popup.lg{ width:320px; }
+  @keyframes popIn{ 0%{ transform:scale(0.75); opacity:0; } 100%{ transform:scale(1); opacity:1; } }
+
+  .popup-title{
+    background:linear-gradient(180deg, #4a90d9, #1a4a86);
+    position:relative;
+    color:#fff;
+    font-family:'Anton', sans-serif;
+    font-size:0.8rem;
+    letter-spacing:0.02em;
+    text-transform:uppercase;
+    padding:0.5rem 0.6rem;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    cursor:move;
+    user-select:none;
+  }
+  .popup-title::before{
+    content:"";
+    position:absolute; inset:0 0 55% 0;
+    background:linear-gradient(180deg, rgba(255,255,255,0.5), transparent);
+    pointer-events:none;
+  }
+  .popup-title-text{ position:relative; z-index:1; display:flex; align-items:center; gap:0.4rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .popup-btns{ position:relative; z-index:1; display:flex; gap:4px; }
+  .popup-btns button{
+    width:18px; height:18px;
+    border-radius:50%;
+    border:none;
+    color:#fff;
+    font-size:0.6rem;
+    font-weight:700;
+    line-height:1;
+    cursor:pointer;
+    background:rgba(255,255,255,0.18);
+    transition:background 0.15s ease;
+  }
+  .popup-btns button:hover{ background:rgba(255,255,255,0.32); }
+  .popup-btns .popup-close:hover{ background:var(--accent); }
+  .popup.blink .popup-title{ animation:titleBlink 1s steps(1) infinite; }
+  @keyframes titleBlink{
+    0%,49%{ background:linear-gradient(180deg, #4a90d9, #1a4a86); }
+    50%,100%{ background:linear-gradient(180deg, #e0405a, #7a0e1e); }
+  }
+
+  .popup-body{ padding:0.9rem 0.9rem 0.8rem; font-size:0.8rem; line-height:1.45; color:var(--text); }
+  .popup-flex{ display:flex; gap:0.7rem; align-items:flex-start; }
+  .popup-icon{ font-size:1.7rem; line-height:1; }
+  .popup-actions{ display:flex; justify-content:center; gap:0.5rem; margin-top:0.85rem; flex-wrap:wrap; }
+  .popup-actions button{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.68rem;
+    letter-spacing:0.03em;
+    text-transform:uppercase;
+    color:#fff;
+    padding:0.4rem 0.9rem;
+    border-radius:999px;
+    border:none;
+    background:rgba(255,255,255,0.1);
+    cursor:pointer;
+    transition:background 0.15s ease;
+  }
+  .popup-actions button:hover{ background:rgba(255,255,255,0.22); }
+
+  .popup-progress{ margin-top:0.6rem; height:12px; border-radius:999px; background:rgba(255,255,255,0.08); overflow:hidden; }
+  .popup-progress .fill{ height:100%; width:99%; background:linear-gradient(90deg, var(--accent-3), var(--accent)); }
+  .popup-progress-label{ font-size:0.63rem; margin-top:0.3rem; text-align:right; color:var(--text-dim); }
+
+  .popup-adimg{ position:relative; width:100%; height:150px; border-radius:8px; overflow:hidden; margin-bottom:0.6rem; background:#1a1a20; }
+  .popup.lg .popup-adimg{ height:180px; }
+  .popup-adimg img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .popup-adimg-fallback{
+    display:none; position:absolute; inset:0;
+    align-items:center; justify-content:center; text-align:center;
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.62rem; color:var(--text-dim);
+    background-image:repeating-linear-gradient(45deg, #232329 0 10px, #1a1a20 10px 20px);
+  }
+
+  .popup-rating{ display:flex; flex-wrap:wrap; gap:5px; justify-content:center; margin-top:0.8rem; }
+  .popup-rating button{
+    width:26px; height:26px;
+    border-radius:6px;
+    border:none;
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.68rem;
+    font-weight:700;
+    color:#fff;
+    background:rgba(255,255,255,0.1);
+    cursor:pointer;
+    transition:background 0.15s ease, transform 0.1s ease;
+  }
+  .popup-rating button:hover{ background:var(--accent-2); color:#0b0b0d; transform:translateY(-2px); }
+  .popup-thanks{ text-align:center; font-weight:700; padding:0.5rem 0; }
+
+  .popup-launcher{ display:flex; flex-direction:column; gap:0.45rem; margin-top:0.8rem; }
+  .popup-launcher a{
+    display:block; text-align:center;
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.72rem;
+    font-weight:700;
+    letter-spacing:0.02em;
+    text-transform:uppercase;
+    padding:0.5rem;
+    border-radius:8px;
+    color:#0b0b0d;
+    transition:filter 0.15s ease, transform 0.1s ease;
+  }
+  .popup-launcher a:hover{ filter:brightness(1.1); transform:translateY(-2px); }
+  .popup-launcher a.l-oeste{ background:var(--accent-2); }
+  .popup-launcher a.l-nirvana{ background:var(--accent-3); color:#fff; }
+  .popup-launcher a.l-exorcismus{ background:var(--accent); color:#fff; }
+
+  @media (max-width: 700px){
+    .creator-grid{ grid-template-columns:repeat(3, 1fr); gap:0.6rem; }
+    .popup{ width:82vw; }
+    .popup.lg{ width:86vw; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation:none !important; transition:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<a class="back-link" href="index.html">
+    <span>Voltar ao Site Main shi?</span>
+</a>
+
+  <main>
+    <section class="hero">
+      <div class="hero-shard s1"></div>
+      <div class="hero-shard s2"></div>
+      <div class="hero-halftone"></div>
+      <span class="eyebrow">Criador de fichas</span>
+      <h1>Créditos</h1>
+      <p class="subhead">Quem fez o quê, e porquê.</p>
+    </section>
+
+    <div class="block">
+      <span class="section-label"><span>Criadores</span></span>
+      <div class="creator-grid">
+        <div class="creator-card">
+          <div class="photo-frame">
+            <div class="photo-bg" style="background-image:url('Imagens_Site/Toregui.jpg');"></div>
+            <div class="photo-nameplate">
+              <span class="photo-tag">Criador de Sistema</span>
+              <div class="photo-name">Toregui</div>
+              <div class="photo-system">Este de lá, para oeste de cá</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="creator-card clickable" id="hades-card" role="button" tabindex="0" aria-label="Tocar som do Hades">
+          <div class="photo-frame">
+            <div class="photo-bg" style="background-image:url('Imagens_Site/Hades.jpg');"></div>
+            <div class="photo-nameplate">
+              <span class="photo-tag">Direção Geral do Site/Criador de Sistema</span>
+              <div class="photo-name">Hades</div>
+              <div class="photo-system">Fall of Nirvana</div>
+            </div>
+          </div>
+          <span class="click-hint">clica em mim.</span>
+        </div>
+
+        <div class="creator-card">
+          <div class="photo-frame">
+            <div class="photo-bg" style="background-image:url('Imagens_Site/Luxxx.jpg');"></div>
+            <div class="photo-nameplate">
+              <span class="photo-tag">Criador de Sistema</span>
+              <div class="photo-name">Luxx</div>
+              <div class="photo-system">Exorcismus</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block">
+      <span class="section-label"><span>Descrição</span></span>
+      <div class="glass-panel">
+        <p class="copy">O <b>Criador de Fichas</b> é uma coleção de três sistemas de jogo independentes, cada um com o seu próprio mundo, regras e estética, de um mundo fantasia ao exorcismo de maldições, escolhes o que queres jogar com. Alem disso todas as fichas criadas aqui são guardadas localmente, ou seja, se mudares de computador e baixares tudo do zero, provavelmente não terás acesso a essas fichas criadas no outro pc. Deu para entender? Se não fode-te. </p>
+        <p class="copy"><b>Tentei</b> tratar da direção geral: concebi a criação de acordo com o que os criadores dos sistemas indicaram que queriam, desenhei como este site seria e escolhi os sons que ouves ao navegar. </p>
+      </div>
+    </div>
+
+    <div class="block">
+      <span class="section-label"><span>Inspirações</span></span>
+      <div class="glass-panel">
+        <div class="insp-list">
+          <div class="insp-row">
+            <span class="insp-name">Persona em geral</span>
+            <span class="insp-note">Interface do site</span>
+          </div>
+          <div class="insp-row">
+            <span class="insp-name">The Legend of Zelda</span>
+            <span class="insp-note">alguns aspetos do Fall of Nirvana</span>
+          </div>
+          <div class="insp-row">
+            <span class="insp-name">Jujutsu Kaisen</span>
+            <span class="insp-note">o mundo de Exorcismus</span>
+          </div>
+          <!--
+            MODELO — copia este bloco e edita para adicionares mais inspirações:
+            <div class="insp-row">
+              <span class="insp-name">Nome da obra/jogo/filme</span>
+              <span class="insp-note">o que inspirou</span>
+            </div>
+          -->
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>Arquivo de Sistemas — conteúdo original, provavelmente</footer>
+
+  <button class="ad-trigger" id="ad-trigger">Anúncios</button>
+  <div class="popup-layer" id="popup-layer"></div>
+
+<script>
+  const hadesCard = document.getElementById('hades-card');
+  let hadesAudio = null;
+  function playHades(){
+    if(!hadesAudio){
+      hadesAudio = new Audio('sounds/jujutsu.mp3');
+      hadesAudio.volume = 0.75;
+    } else {
+      hadesAudio.currentTime = 0;
+    }
+    hadesAudio.play().catch(() => {});
+  }
+  hadesCard.addEventListener('click', playHades);
+  hadesCard.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); playHades(); }
+  });
+
+  /* ===================== POP-UPS ===================== */
+  const layer = document.getElementById('popup-layer');
+
+  const ADS = [
+    {
+      /* troca a imagem: coloca o ficheiro em Imagens_Site/ e muda o caminho abaixo */
+      title: 'Publicidade Oficial',
+      icon: null,
+      image: 'Imagens_Site/anuncio1.jpg',
+      large: true,
+      body: 'Compra já o teu bilhete para o Fall of Nirvana. (não existe, mas finge que sim wink wink)',
+      actions: ['Comprar', 'Mais tarde']
+    },
+    {
+      /* troca a imagem: coloca o ficheiro em Imagens_Site/ e muda o caminho abaixo */
+      title: 'Não Percas!!!',
+      icon: null,
+      image: 'Imagens_Site/anuncio2.jpg',
+      large: true,
+      blink: true,
+      body: 'Oferta por tempo limitado: um (1) exorcismo grátis por cada visita ao site.',
+      actions: ['Quero já', 'Ignorar']
+    },
+    {
+      title: 'Sondagem de Satisfação',
+      icon: '⭐',
+      body: 'De 0 a 10, quanto gostaste do Site?',
+      rating: true
+    },
+    {
+      title: 'Menu Rápido',
+      icon: '🚪',
+      body: 'Já agora, apetece entrar nalgum sistema?',
+      launcher: true
+    },
+    {
+      title: 'Parabéns!',
+      icon: '🏆',
+      body: 'És o visitante Nº idk desta página!!! Ganhaste UM (1) sistema de RPG grátis. Clica para reclamar já.',
+      actions: ['Reclamar prémio', 'Não, obrigado']
+    },
+    {
+      title: 'Aviso do Sistema',
+      icon: '⚠️',
+      blink: true,
+      body: 'Foram detetados 3 maldições no teu dispositivo. Recomendamos abrir o Exorcismus imediatamente.',
+      actions: ['Exorcizar agora']
+    },
+    {
+      title: 'download.exe',
+      body: 'A descarregar Este de lá, para oeste de cá Edição de Colecionador...',
+      progress: true,
+      actions: ['Cancelar']
+    },
+    {
+      title: 'exorcismus.dll',
+      blink: true,
+      body: 'ERRO: uma entidade está a tentar ler os teus créditos. Isto é normal em Exorcismus.',
+      actions: ['Ignorar (não recomendado)']
+    },
+    {
+      title: 'Sondagem Rápida',
+      icon: '📋',
+      body: 'Numa escala de Toregui a Luxx, quão diabólicamente assombrado está o teu PC neste momento?',
+      actions: ['Muito', 'Só um bocado']
+    }
+  ];
+
+  function rand(min, max){ return Math.random() * (max - min) + min; }
+
+  function spawnAd(ad){
+    const win = document.createElement('div');
+    win.className = 'popup' + (ad.blink ? ' blink' : '') + (ad.large ? ' lg' : '');
+
+    const vw = Math.max(document.documentElement.clientWidth, 320);
+    const vh = Math.max(document.documentElement.clientHeight, 480);
+    win.style.left = rand(vw * 0.04, vw * 0.6) + 'px';
+    win.style.top = rand(vh * 0.1, vh * 0.5) + 'px';
+
+    let progressHtml = '';
+    if(ad.progress){
+      progressHtml = '<div class="popup-progress"><div class="fill"></div></div><div class="popup-progress-label">99% concluído... para sempre</div>';
+    }
+
+    let actionsHtml = (ad.actions || []).map(label =>
+      '<button class="popup-action-btn">' + label + '</button>'
+    ).join('');
+
+    let mediaHtml;
+    if(ad.image){
+      mediaHtml =
+        '<div class="popup-adimg">' +
+          '<img src="' + ad.image + '" alt="anúncio" onerror="this.style.display=\'none\'; this.nextElementSibling.style.display=\'flex\';">' +
+          '<div class="popup-adimg-fallback">IMAGEM AQUI<br>(' + ad.image + ')</div>' +
+        '</div>' +
+        '<div>' + ad.body + '</div>';
+    } else if(ad.rating){
+      const nums = [];
+      for(let i = 0; i <= 10; i++) nums.push(i);
+      mediaHtml =
+        '<div class="popup-flex"><span class="popup-icon">' + ad.icon + '</span><span>' + ad.body + '</span></div>' +
+        '<div class="popup-rating">' +
+          nums.map(n => '<button class="popup-rate-btn" data-n="' + n + '">' + n + '</button>').join('') +
+        '</div>';
+    } else if(ad.launcher){
+      mediaHtml =
+        '<div class="popup-flex"><span class="popup-icon">' + ad.icon + '</span><span>' + ad.body + '</span></div>' +
+        '<div class="popup-launcher">' +
+          '<a href="oeste.html" class="l-oeste">Este de lá, para oeste de cá</a>' +
+          '<a href="nirvana.html" class="l-nirvana">Fall of Nirvana</a>' +
+          '<a href="exorcismus.html" class="l-exorcismus">Exorcismus</a>' +
+        '</div>';
+    } else {
+      mediaHtml =
+        '<div class="popup-flex">' +
+          '<span class="popup-icon">' + ad.icon + '</span>' +
+          '<span>' + ad.body + '</span>' +
+        '</div>';
+    }
+
+    win.innerHTML =
+      '<div class="popup-title">' +
+        '<span class="popup-title-text">' + ad.title + '</span>' +
+        '<div class="popup-btns"><button class="popup-min">–</button><button class="popup-close">×</button></div>' +
+      '</div>' +
+      '<div class="popup-body">' +
+        mediaHtml +
+        progressHtml +
+        '<div class="popup-actions">' + actionsHtml + '</div>' +
+      '</div>';
+
+    layer.appendChild(win);
+
+    const closeBtn = win.querySelector('.popup-close');
+    const minBtn = win.querySelector('.popup-min');
+    const closeWin = () => win.remove();
+    closeBtn.addEventListener('click', closeWin);
+    minBtn.addEventListener('click', closeWin);
+    win.querySelectorAll('.popup-action-btn').forEach(btn => btn.addEventListener('click', closeWin));
+
+    win.querySelectorAll('.popup-rate-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const n = btn.getAttribute('data-n');
+        win.querySelector('.popup-body').innerHTML = '<div class="popup-thanks">Obrigado! Nota registada: ' + n + '/10 ⭐</div>';
+        setTimeout(closeWin, 1100);
+      });
+    });
+
+    const titleBar = win.querySelector('.popup-title');
+    let dragging = false, offX = 0, offY = 0;
+    titleBar.addEventListener('mousedown', (e) => {
+      dragging = true;
+      offX = e.clientX - win.offsetLeft;
+      offY = e.clientY - win.offsetTop;
+      win.style.zIndex = 999;
+    });
+    document.addEventListener('mousemove', (e) => {
+      if(!dragging) return;
+      win.style.left = (e.clientX - offX) + 'px';
+      win.style.top = (e.clientY - offY) + 'px';
+    });
+    document.addEventListener('mouseup', () => { dragging = false; });
+  }
+
+  function unleashAds(){
+    layer.innerHTML = '';
+    const shuffled = [...ADS].sort(() => Math.random() - 0.5);
+    shuffled.forEach((ad, i) => {
+      setTimeout(() => spawnAd(ad), i * 900 + rand(200, 600));
+    });
+  }
+
+  setTimeout(unleashAds, 1400);
+  document.getElementById('ad-trigger').addEventListener('click', unleashAds);
+</script>
+</body>
+</html>
