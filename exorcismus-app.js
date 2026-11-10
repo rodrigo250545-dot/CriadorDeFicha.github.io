@@ -36,7 +36,7 @@ function defaultState(){
   return {
     id: uid(), step: 0, concluida: false, criadaEm: new Date().toLocaleDateString('pt-PT'),
     // identidade
-    nome: '', jogador: '', idade: 0, local: '', historia: '', aparencia: '', foto: '', grau: 0,
+    nome: '', jogador: '', genero: '', idade: 0, local: '', historia: '', aparencia: '', foto: '', grau: 0,
     // natureza
     naturezaId: null, naturezaBonusMap: ZERO_ATTRS(), naturezaBonusPicks: [],
     periciaLigada: '', fonteSustento: '', objeto: '', eraDourada: '', alienResist: '', alienVuln: '',
@@ -48,7 +48,8 @@ function defaultState(){
     // perícias
     periciasEscolhidas: [], progPericias: [],
     // técnica
-    tecnica: { conceito: '', invoca: false, itens: {} },
+    tecnica: { conceito: '', invoca: false, itens: {} }, tecnicaAdiada: false,
+    dominio: { nome: '', descricao: '' },
     // equipamento
     armas: [], semArma: false, armadura: defaultArmadura(), itens: '',
     // invocações
@@ -85,6 +86,8 @@ function migrateRaw(raw){
   s.local = (r.local != null) ? r.local : (r.nacionalidade || '');
   delete s.nacionalidade;
   s.idade = parseInt(s.idade, 10) || 0;
+  s.dominio = Object.assign({ nome: '', descricao: '' }, r.dominio || {});
+  s.tecnicaAdiada = !!r.tecnicaAdiada;
 
 
   const t = r.tecnica || {};
@@ -319,7 +322,7 @@ function stepDone(i, s = STATE){
     case STEP.PERI:
       return !!s.arquetipoId && s.periciasEscolhidas.length === periciasEscolhaTotal(s) &&
         s.progPericias.length === periciasProgTotal(s);
-    case STEP.TEC: return !!s.naturezaId && tecnicaValida(s);
+    case STEP.TEC: return !!s.tecnicaAdiada || (!!s.naturezaId && tecnicaValida(s));
     case STEP.EQUIP: return armasValidas(s);
     default: return true;
   }
@@ -584,9 +587,12 @@ function stepIdentidade(){
           </div>
         </div>
       </div>
+      <label class="field"><span>Género · opcional</span>
+        <input type="text" data-bind="genero" value="${esc(STATE.genero)}" list="dl-genero" placeholder="Homem, Mulher, Não-binário…" autocomplete="off"></label>
+      <datalist id="dl-genero"><option value="Homem"><option value="Mulher"><option value="Não-binário"><option value="Outro"></datalist>
       <label class="field"><span>Idade (0 = desconhecida)</span>
         <input type="number" min="0" data-bind="idade" data-num value="${esc(STATE.idade || 0)}"></label>
-      <label class="field"><span>Local de nascimento · opcional</span>
+      <label class="field span2"><span>Local de nascimento · opcional</span>
         <input type="text" data-bind="local" value="${esc(STATE.local)}" placeholder="Ex: Lisboa, Portugal"></label>
       <label class="field span2"><span>Nome do jogador · opcional</span>
         <input type="text" data-bind="jogador" value="${esc(STATE.jogador)}"></label>
@@ -867,10 +873,24 @@ function aprimRowHTML(readonly){
       </div>`;
     }).join('')}</div>`;
 }
+function skipTecCard(){
+  return `<div class="card ${STATE.tecnicaAdiada ? 'warn' : ''}">
+    <label class="check"><input type="checkbox" data-bind="tecnicaAdiada" data-check data-rerender ${STATE.tecnicaAdiada ? 'checked' : ''}><span><b>Fazer a Técnica Inata mais tarde.</b> A etapa fica como concluída e podes voltar aqui quando quiseres.</span></label>
+    ${STATE.tecnicaAdiada ? '<p class="muted sm">Técnica adiada. Desmarca para voltares a preencher.</p>' : ''}</div>`;
+}
+function dominioCardHTML(){
+  const d = STATE.dominio, g = STATE.grau;
+  return `<h3 class="sec-title">Expansão de Domínio <small>(opcional)</small></h3>
+    <div class="card summon">
+      <p class="muted sm">Domain Expansion Incompleta desbloqueia no ${GRAUS[4]} e a Completa no ${GRAUS[5]}${g >= 4 ? ' (já disponível)' : ''}. Podes escrevê-la já ou deixar para depois.</p>
+      <label class="field"><span>Nome do Domínio</span><input type="text" data-bind="dominio.nome" value="${esc(d.nome)}" placeholder="ex: Santuário das Mil Sombras"></label>
+      <label class="field"><span>Descrição (como é, o que acontece lá dentro)</span><textarea rows="5" data-bind="dominio.descricao" placeholder="Aparência do espaço, efeito sobre quem lá está, como se ativa…">${esc(d.descricao)}</textarea></label>
+    </div>`;
+}
 function stepTecnica(){
   if(STATE.tracoRaro === 'celestial') return `${head('Técnica Inata')}<div class="card warn"><p><b>Restrição Celestial:</b> não tens energia amaldiçoada, logo não tens Técnica Inata.</p></div>`;
-  if(!STATE.naturezaId) return needFirst('Técnica Inata', 'Escolhe primeiro a Natureza no Conceito: ela decide variantes extra (Feiticeiro) e ajusta custos (Reencarnado).', STEP.CONC, 'Conceito');
-  return `${head('Técnica Inata', 'Um <b>Conceito</b> fixo e, em cada Grau, uma carta nova: uma variante com 4 blocos (Efeito, Alcance, Duração, Área) e uma <b>Restrição</b> que dá desconto. Usa as setas para navegar e <b>Editar</b> para a abrir.')}
+  if(!STATE.naturezaId) return `${needFirst('Técnica Inata', 'Escolhe primeiro a Natureza no Conceito: ela decide variantes extra (Feiticeiro) e ajusta custos (Reencarnado).', STEP.CONC, 'Conceito')}${skipTecCard()}`;
+  const corpo = STATE.tecnicaAdiada ? '' : `
     <div class="card">
       <label class="field"><span>Conceito (em termos físicos o que a técnica faz, não muda)</span>
         <input type="text" data-bind="tecnica.conceito" value="${esc(STATE.tecnica.conceito)}" placeholder='ex: "manipula sombras como matéria sólida"'></label>
@@ -878,6 +898,8 @@ function stepTecnica(){
     </div>
     ${carrosselHTML(false)}
     ${aprimRowHTML(false)}`;
+  return `${head('Técnica Inata', 'Um <b>Conceito</b> fixo e, em cada Grau, uma carta nova: uma variante com 4 blocos (Efeito, Alcance, Duração, Área) e uma <b>Restrição</b> que dá desconto. Usa as setas para navegar e <b>Editar</b> para a abrir.')}
+    ${skipTecCard()}${corpo}${dominioCardHTML()}`;
 }
 
 function backHTML(slot){
@@ -1189,7 +1211,8 @@ function fichaHTML(c){
       ${fl('Nome', esc(s.nome), STEP.IDENT)}${fl('Jogador', esc(s.jogador), STEP.IDENT)}
       ${fl('Natureza', c.n.nome, STEP.CONC)}${fl('Arquétipo', c.arq.nome, STEP.CONC)}
       ${fl('Estilo', c.estilo ? c.estilo.nome : '', STEP.CONC)}${fl('Grau', GRAUS[g], STEP.CONC)}
-      ${fl('Idade', s.idade ? esc(s.idade) : '', STEP.IDENT)}${fl('Local de nascimento', esc(s.local), STEP.IDENT)}
+      ${fl('Género', esc(s.genero), STEP.IDENT)}${fl('Idade', s.idade ? esc(s.idade) : '', STEP.IDENT)}
+      ${fl('Local de nascimento', esc(s.local), STEP.IDENT)}
     </div>`, { edit: STEP.IDENT });
 
   const principal = panel('Principal', `
@@ -1222,14 +1245,17 @@ function fichaHTML(c){
 
   let tecnica;
   if(c.celestial) tecnica = '<div class="empty">Restrição Celestial: sem Técnica Inata.</div>';
+  else if(s.tecnicaAdiada) tecnica = '<div class="empty">Técnica adiada. Clica no lápis para a preencher quando quiseres.</div>';
   else if(!s.tecnica.conceito.trim() && !Object.keys(s.tecnica.itens).length) tecnica = '<div class="empty">Ainda não definida.</div>';
   else tecnica = `${s.tecnica.conceito.trim() ? `<p class="center"><b>Conceito:</b> ${esc(s.tecnica.conceito)}</p>` : ''}${carrosselHTML(true)}${aprimRowHTML(true)}`;
   const tecPanel = panel('Técnica Inata', tecnica, { edit: STEP.TEC, cls: 'full' });
 
+  const dom = (s.dominio.nome.trim() || s.dominio.descricao.trim()) && !c.celestial
+    ? panel('Expansão de Domínio', `<p class="center"><b>${esc(s.dominio.nome) || 'Sem nome'}</b></p>${s.dominio.descricao.trim() ? `<p class="pre">${esc(s.dominio.descricao)}</p>` : ''}`, { edit: STEP.TEC, cls: 'full' }) : '';
   const inv = panel('Inventário', inventarioHTML(c), { edit: STEP.EQUIP, cls: 'full' });
   const summon = precisaInvocacao(s) ? invocacaoHTML(c, true) : '';
 
-  return `<div class="fgrid">${infos}${principal}${atributos}${pericias}${hp}${sobreHTML(c)}${tecPanel}${inv}${summon}</div>`;
+  return `<div class="fgrid">${infos}${principal}${atributos}${pericias}${hp}${sobreHTML(c)}${tecPanel}${dom}${inv}${summon}</div>`;
 }
 function invocacaoHTML(c, edit){
   const s = c.s, pvInv = Math.ceil(c.pv / 2), defInv = 10 + s.grau * 2;
@@ -1265,9 +1291,51 @@ function stepFicha(){
       ${STATE.concluida
         ? '<p>✓ Ficha concluída e guardada neste dispositivo. Podes continuar a editar qualquer etapa.</p>'
         : '<p>Está tudo preenchido. Finaliza para marcar a ficha como concluída (já está a ser guardada automaticamente).</p><button class="btn primary" data-act="finalizar">Finalizar ficha</button>'}
-    </div>`;
+    </div>
+    <div class="card"><p class="lbl">Partilhar ficha</p>
+      <p class="muted sm">O ficheiro leva tudo (incluindo fotos). O código é texto curto para colar numa mensagem, mas sem fotos. Quem receber usa <b>Importar ficha</b> na lista de fichas.</p>
+      <div class="row"><button class="btn" data-act="exp-file">Exportar ficheiro</button><button class="btn ghost" data-act="exp-code">Copiar código</button></div></div>`;
 }
 
+
+/* ---------- partilha / importação ---------- */
+function exportPayload(raw, semFotos){
+  const r = JSON.parse(JSON.stringify(raw));
+  delete r.id;
+  if(semFotos){ r.foto = ''; Object.values((r.tecnica && r.tecnica.itens) || {}).forEach(i => { if(i && i.foto) i.foto = ''; }); }
+  return { exorcismus: 1, ficha: r };
+}
+const slug = (n) => (String(n || 'ficha').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-|-$/g, '') || 'ficha').toLowerCase();
+function descarregarFicha(raw){
+  const blob = new Blob([JSON.stringify(exportPayload(raw, false))], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = 'exorcismus-' + slug(raw.nome) + '.json';
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+function codigoFicha(raw){
+  return 'EXO1:' + btoa(unescape(encodeURIComponent(JSON.stringify(exportPayload(raw, true)))));
+}
+function copiarCodigo(raw){
+  const code = codigoFicha(raw);
+  const ok = () => alert('Código copiado! Envia-o a quem quiseres (as fotos não vão no código, usa o ficheiro para isso).');
+  if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(code).then(ok, () => prompt('Copia este código:', code));
+  else prompt('Copia este código:', code);
+}
+function importarTexto(txt){
+  try{
+    txt = String(txt || '').trim();
+    if(!txt) throw new Error('vazio');
+    if(txt.startsWith('EXO1:')) txt = decodeURIComponent(escape(atob(txt.slice(5).replace(/\s+/g, ''))));
+    const obj = JSON.parse(txt);
+    if(!obj || !obj.exorcismus || !obj.ficha) throw new Error('formato');
+    migrateRaw(obj.ficha);
+    const hoje = new Date().toLocaleDateString('pt-PT');
+    const list = loadSheets();
+    list.push({ id: uid(), criadaEm: hoje, editadaEm: hoje, raw: obj.ficha });
+    if(!saveSheets(list)) throw new Error('armazenamento');
+    renderList(); return true;
+  } catch(e){ alert('Não consegui importar: o ficheiro ou código não é uma ficha válida do Exorcismus.'); return false; }
+}
 
 function renderList(){
   const root = $('sheets-root'); if(!root) return;
@@ -1289,6 +1357,7 @@ function renderList(){
         ? `<div class="mini-progress"><div style="width:${p.pct}%"></div></div><div class="muted sm">${p.done}/${p.total} etapas · falta: ${p.falta.slice(0, 3).join(', ')}${p.falta.length > 3 ? '…' : ''}</div>`
         : (c ? `<div class="chips"><span class="chip static">PV <b>${c.pv}</b></span><span class="chip static">PA <b>${c.celestial ? '-' : c.pa}</b></span><span class="chip static">Coesão <b>${c.co}</b></span><span class="chip static">Defesa <b>${c.defesa}</b></span></div>` : '')}
       <div class="row end"><button class="btn sm" data-act="abrir" data-id="${f.id}">${incompleta ? 'Continuar' : 'Abrir'}</button>
+        <button class="btn sm ghost" data-act="exp-file-l" data-id="${f.id}">Exportar</button><button class="btn sm ghost" data-act="exp-code-l" data-id="${f.id}">Código</button>
         <button class="btn sm danger" data-act="apagar" data-id="${f.id}">Apagar</button></div></div>`;
   }).join('')}</div>`;
 }
@@ -1330,6 +1399,8 @@ function onAct(act, el){
     case 'sair': leaveEditor(); return;
     case 'foto-remove': STATE.foto = ''; break;
     case 'finalizar': STATE.concluida = true; break;
+    case 'exp-file': descarregarFicha(snapshotState()); return;
+    case 'exp-code': copiarCodigo(snapshotState()); return;
 
     case 'car-prev': carGo(carIdx - 1); return;
     case 'car-next': carGo(carIdx + 1); return;
@@ -1468,6 +1539,14 @@ document.addEventListener('DOMContentLoaded', () => {
   $('btn-criar-ficha').addEventListener('click', startNew);
   $('btn-ver-fichas').addEventListener('click', () => { renderList(); showView('list'); });
   $('btn-nova-da-lista').addEventListener('click', startNew);
+  $('btn-importar').addEventListener('click', () => { const b = $('import-box'); b.hidden = !b.hidden; });
+  $('btn-importar-ok').addEventListener('click', () => { const t = $('import-txt'); if(importarTexto(t.value)){ t.value = ''; $('import-box').hidden = true; } });
+  $('import-file').addEventListener('change', (e) => {
+    const f = e.target.files && e.target.files[0]; if(!f) return;
+    const rd = new FileReader();
+    rd.onload = () => { if(importarTexto(rd.result)) $('import-box').hidden = true; };
+    rd.readAsText(f); e.target.value = '';
+  });
   $('btn-voltar-home').addEventListener('click', () => showView('home'));
 
   $('sheets-root').addEventListener('click', (e) => {
@@ -1476,6 +1555,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if(el.dataset.act === 'apagar'){
       e.stopPropagation();
       if(confirm('Apagar esta ficha? Não dá para desfazer.')){ saveSheets(loadSheets().filter(f => f.id !== id)); renderList(); }
+      return;
+    }
+    if(el.dataset.act === 'exp-file-l' || el.dataset.act === 'exp-code-l'){
+      e.stopPropagation();
+      const rec = loadSheets().find(f => f.id === id); if(!rec) return;
+      if(el.dataset.act === 'exp-file-l') descarregarFicha(rec.raw); else copiarCodigo(rec.raw);
       return;
     }
     if(el.dataset.act === 'abrir'){

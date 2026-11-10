@@ -630,7 +630,14 @@ details summary{cursor:pointer;color:var(--red3);font-size:.9rem}
 <section id="view-list" hidden>
   <div class="wrap">
     <div class="list-head"><h2>Fichas guardadas</h2>
-      <div class="row"><button class="btn ghost sm" id="btn-voltar-home">← Início</button><button class="btn primary sm" id="btn-nova-da-lista">+ Nova ficha</button></div></div>
+      <div class="row"><button class="btn ghost sm" id="btn-voltar-home">← Início</button><button class="btn sm" id="btn-importar">Importar ficha</button><button class="btn primary sm" id="btn-nova-da-lista">+ Nova ficha</button></div></div>
+    <div class="card" id="import-box" hidden>
+      <p class="lbl">Importar ficha</p>
+      <label class="btn sm">Escolher ficheiro (.json)<input type="file" accept=".json,application/json" id="import-file" hidden></label>
+      <p class="muted sm" style="margin:10px 0 6px">Ou cola aqui o código que recebeste:</p>
+      <textarea id="import-txt" rows="3" placeholder="EXO1:…"></textarea>
+      <div class="row end"><button class="btn primary sm" id="btn-importar-ok">Importar código</button></div>
+    </div>
     <div id="sheets-root"></div>
   </div>
 </section>
