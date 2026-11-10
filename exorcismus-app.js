@@ -874,15 +874,17 @@ function aprimRowHTML(readonly){
     }).join('')}</div>`;
 }
 function skipTecCard(){
+  if(!STATE.tecnicaAdiada && STATE.naturezaId && tecnicaValida(STATE)) return '';
   return `<div class="card ${STATE.tecnicaAdiada ? 'warn' : ''}">
     <label class="check"><input type="checkbox" data-bind="tecnicaAdiada" data-check data-rerender ${STATE.tecnicaAdiada ? 'checked' : ''}><span><b>Fazer a Técnica Inata mais tarde.</b> A etapa fica como concluída e podes voltar aqui quando quiseres.</span></label>
     ${STATE.tecnicaAdiada ? '<p class="muted sm">Técnica adiada. Desmarca para voltares a preencher.</p>' : ''}</div>`;
 }
 function dominioCardHTML(){
   const d = STATE.dominio, g = STATE.grau;
+  if(g < 4 || STATE.tracoRaro === 'celestial') return '';
   return `<h3 class="sec-title">Expansão de Domínio <small>(opcional)</small></h3>
-    <div class="card summon">
-      <p class="muted sm">Domain Expansion Incompleta desbloqueia no ${GRAUS[4]} e a Completa no ${GRAUS[5]}${g >= 4 ? ' (já disponível)' : ''}. Podes escrevê-la já ou deixar para depois.</p>
+    <div class="card dominio">
+      <p class="muted sm">Domain Expansion Incompleta desde o ${GRAUS[4]}, Completa a partir do ${GRAUS[5]}. Podes escrevê-la já ou deixar para depois.</p>
       <label class="field"><span>Nome do Domínio</span><input type="text" data-bind="dominio.nome" value="${esc(d.nome)}" placeholder="ex: Santuário das Mil Sombras"></label>
       <label class="field"><span>Descrição (como é, o que acontece lá dentro)</span><textarea rows="5" data-bind="dominio.descricao" placeholder="Aparência do espaço, efeito sobre quem lá está, como se ativa…">${esc(d.descricao)}</textarea></label>
     </div>`;
@@ -1250,7 +1252,7 @@ function fichaHTML(c){
   else tecnica = `${s.tecnica.conceito.trim() ? `<p class="center"><b>Conceito:</b> ${esc(s.tecnica.conceito)}</p>` : ''}${carrosselHTML(true)}${aprimRowHTML(true)}`;
   const tecPanel = panel('Técnica Inata', tecnica, { edit: STEP.TEC, cls: 'full' });
 
-  const dom = (s.dominio.nome.trim() || s.dominio.descricao.trim()) && !c.celestial
+  const dom = (s.dominio.nome.trim() || s.dominio.descricao.trim()) && !c.celestial && s.grau >= 4
     ? panel('Expansão de Domínio', `<p class="center"><b>${esc(s.dominio.nome) || 'Sem nome'}</b></p>${s.dominio.descricao.trim() ? `<p class="pre">${esc(s.dominio.descricao)}</p>` : ''}`, { edit: STEP.TEC, cls: 'full' }) : '';
   const inv = panel('Inventário', inventarioHTML(c), { edit: STEP.EQUIP, cls: 'full' });
   const summon = precisaInvocacao(s) ? invocacaoHTML(c, true) : '';
