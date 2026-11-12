@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Main shi</title>
+<title>Criador de Fichas</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -17,6 +17,7 @@
     overflow-x:hidden;
   }
   a{ color:inherit; text-decoration:none; }
+  button{ font:inherit; }
 
   .eyebrow{
     font-family:'JetBrains Mono', monospace;
@@ -27,17 +28,43 @@
   }
 
   /* ============ HUB SHELL ============ */
-  #hub{ min-height:100vh; display:flex; flex-direction:column; }
+  /* --bar: cor das barras do topo + ticker. Branca por defeito, muda com o painel em hover. */
+  #hub{
+    --bar:#fff;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+  }
+
   .hub-top{
     position:relative;
     display:flex;
     justify-content:space-between;
     align-items:center;
+    gap:1rem;
     padding:1.1rem 2.4rem;
-    background:#0b0b0d;
+    background:
+      linear-gradient(115deg, transparent 0 62%, color-mix(in srgb, var(--bar) 14%, transparent) 62% 70%, transparent 70%),
+      #0b0b0d;
     border-bottom:4px solid #fff;
     z-index:5;
+    animation:dropIn 0.6s cubic-bezier(.2,.8,.2,1) both;
   }
+  /* troço colorido na linha branca */
+  .hub-top::after{
+    content:"";
+    position:absolute;
+    left:0; bottom:-4px;
+    width:34%; height:4px;
+    background:var(--bar);
+    transition:background 0.3s ease;
+    clip-path:polygon(0 0, 100% 0, 97% 100%, 0 100%);
+  }
+  @keyframes dropIn{
+    from{ transform:translateY(-100%); opacity:0; }
+    to{ transform:none; opacity:1; }
+  }
+
   .hub-top .mark{
     font-family:'Anton', sans-serif;
     font-size:1.15rem;
@@ -55,8 +82,11 @@
     position:absolute;
     left:-10px; top:2px; bottom:2px;
     width:5px;
-    background:#e0102a;
+    background:var(--bar);
+    transition:background 0.3s ease;
   }
+  .hub-top .count b{ color:#fff; font-weight:700; }
+
   .credits-link{
     font-family:'JetBrains Mono', monospace;
     font-size:0.7rem;
@@ -76,42 +106,73 @@
   .credits-link::after{ content:"→"; display:inline-block; transform:skew(12deg); transition:transform 0.2s ease; }
   .credits-link:hover{ color:#0b0b0d; background:#e0102a; border-color:#e0102a; gap:0.75rem; }
 
+  /* ---- faixa inferior com ticker ---- */
   .hub-bottom{
     position:relative;
-    padding:1.3rem 2.2rem 1.5rem;
-    text-align:center;
-    background:#0b0b0d;
+    background:var(--bar);
+    color:#0b0b0d;
     border-top:4px solid #fff;
+    transition:background 0.3s ease;
+    overflow:hidden;
+    padding:0.55rem 0;
   }
-  .hub-bottom .eyebrow{ position:relative; z-index:1; }
-  .hub-bottom .eyebrow b{ color:#fff; font-weight:700; }
+  .ticker{ overflow:hidden; white-space:nowrap; }
+  .ticker-track{
+    display:flex;
+    width:max-content;
+    animation:ticker 28s linear infinite;
+  }
+  .ticker-track span{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.72rem;
+    font-weight:700;
+    letter-spacing:0.28em;
+    text-transform:uppercase;
+  }
+  @keyframes ticker{
+    from{ transform:translateX(0); }
+    to{ transform:translateX(-50%); }
+  }
 
   /* ============ PANELS ============ */
   .panels{ flex:1; display:flex; min-height:78vh; }
+
   .panel{
     position:relative;
     flex:1;
+    min-width:0;
     overflow:hidden;
     isolation:isolate;
     display:flex;
     align-items:flex-end;
-    cursor:pointer;
+    background:#0b0b0d;
+    transition:flex-grow 0.35s cubic-bezier(.65,0,.35,1);
+    border-right:3px solid #0b0b0d;
+    animation:panelIn 0.7s cubic-bezier(.2,.8,.2,1) both;
+    animation-delay:calc(var(--i, 0) * 0.09s + 0.15s);
+  }
+  .panel:last-child{ border-right:none; }
+  @keyframes panelIn{
+    from{ opacity:0; transform:translateY(34px); }
+    to{ opacity:1; transform:none; }
+  }
+  .panel:hover, .panel:focus-within{ flex-grow:1.35; }
+
+  /* camada artística (cinzenta em repouso, ganha cor no hover) */
+  .panel-art{
+    position:absolute; inset:0;
+    overflow:hidden;
+    isolation:isolate;
     background:
       linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 100%),
       var(--p-bg);
-    transition:flex-grow 0.35s cubic-bezier(.65,0,.35,1), filter 0.3s ease;
     filter:grayscale(0.55) brightness(0.75);
-    border-right:3px solid #0b0b0d;
+    transition:filter 0.3s ease;
   }
-  .panel:last-child{ border-right:none; }
-  .panel:focus-visible{ outline:2px solid var(--p-accent); outline-offset:-4px; }
-  .panel:hover, .panel:focus-visible{
-    flex-grow:1.35;
-    filter:grayscale(0) brightness(1);
-  }
+  .panel:hover .panel-art, .panel:focus-within .panel-art{ filter:grayscale(0) brightness(1); }
 
   .panel-glow{
-    position:absolute; inset:0; z-index:-3;
+    position:absolute; inset:0; z-index:0;
     background:
       radial-gradient(circle at 30% 20%, var(--p-accent) 0%, transparent 45%),
       radial-gradient(circle at 80% 80%, var(--p-primary) 0%, transparent 55%);
@@ -121,15 +182,16 @@
   }
   .panel:nth-child(2) .panel-glow{ animation-delay:1.4s; }
   .panel:nth-child(3) .panel-glow{ animation-delay:2.8s; }
+  .panel:nth-child(4) .panel-glow{ animation-delay:4.2s; }
   @keyframes drift{
     0%{ transform:translate(-4%, -3%) scale(1); }
     100%{ transform:translate(4%, 3%) scale(1.12); }
   }
 
   .panel-glyph{
-    position:absolute; top:8%; right:6%; z-index:1;
+    position:absolute; top:8%; right:6%; z-index:2;
     font-family:'Anton', sans-serif;
-    font-size:6.5rem;
+    font-size:clamp(3.4rem, 6vw, 6.5rem);
     color:#fff;
     -webkit-text-stroke:2px var(--p-accent);
     opacity:0.16;
@@ -137,14 +199,27 @@
     user-select:none;
     transition:opacity .3s ease, transform .35s ease;
   }
-  .panel:hover .panel-glyph{ opacity:0.32; transform:translateY(-6px) scale(1.05); }
+  .panel:hover .panel-glyph, .panel:focus-within .panel-glyph{ opacity:0.34; transform:translateY(-6px) scale(1.05); }
+
+  /* link que cobre o painel inteiro */
+  .panel-link{
+    position:absolute; inset:0; z-index:2;
+    cursor:pointer;
+  }
+  .panel-link:focus-visible{ outline:3px solid var(--p-accent); outline-offset:-6px; }
 
   .panel-content{
     position:relative;
     z-index:3;
-    padding:2.2rem 1.6rem 2.8rem;
     width:100%;
+    padding:2.2rem 1.4rem 2.6rem 1.6rem;
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:1rem;
+    pointer-events:none;
   }
+  .panel-text{ min-width:0; }
   .panel-index{
     font-family:'JetBrains Mono', monospace;
     font-size:0.72rem;
@@ -157,10 +232,16 @@
     margin-bottom:0.9rem;
     transform:skew(-10deg);
     clip-path:polygon(6% 0, 100% 0, 94% 100%, 0 100%);
+    transition:transform 0.3s ease, background 0.3s ease;
   }
+  .panel:hover .panel-index{ transform:skew(-10deg) translateX(6px); }
+
   .panel-title{
+    position:relative;
+    isolation:isolate;
+    display:inline-block;
     font-family:'Anton', sans-serif;
-    font-size:clamp(1.5rem, 3.2vw, 2.35rem);
+    font-size:clamp(1.5rem, 2.6vw, 2.2rem);
     line-height:1.05;
     text-transform:uppercase;
     color:#fff;
@@ -168,18 +249,33 @@
     letter-spacing:0.01em;
     text-shadow:3px 3px 0 rgba(0,0,0,0.55);
   }
+  /* faixa Persona que "risca" por baixo do título */
+  .panel-title::before{
+    content:"";
+    position:absolute;
+    left:-0.4rem; right:-0.4rem; bottom:0.02em;
+    height:0.3em;
+    background:var(--p-accent);
+    opacity:0.85;
+    z-index:-1;
+    transform:skewX(-14deg) scaleX(0);
+    transform-origin:left center;
+    transition:transform 0.4s cubic-bezier(.65,0,.35,1);
+  }
+  .panel:hover .panel-title::before, .panel:focus-within .panel-title::before{ transform:skewX(-14deg) scaleX(1); }
+
   .panel-tagline{
     margin-top:0.9rem;
     max-width:26ch;
     font-size:0.92rem;
-    color:rgba(255,255,255,0.72);
+    color:rgba(255,255,255,0.78);
     max-height:0;
     opacity:0;
     overflow:hidden;
     transition:max-height 0.5s ease, opacity 0.5s ease, margin 0.5s ease;
   }
-  .panel:hover .panel-tagline, .panel:focus-visible .panel-tagline{
-    max-height:6rem; opacity:1; margin-top:0.9rem;
+  .panel:hover .panel-tagline, .panel:focus-within .panel-tagline{
+    max-height:9rem; opacity:1; margin-top:0.9rem;
   }
   .panel-cta{
     margin-top:1.1rem;
@@ -192,18 +288,25 @@
     transform:translateY(6px);
     transition:opacity 0.4s ease 0.05s, transform 0.4s ease 0.05s;
   }
-  .panel:hover .panel-cta, .panel:focus-visible .panel-cta{ opacity:1; transform:translateY(0); }
+  .panel:hover .panel-cta, .panel:focus-within .panel-cta{ opacity:1; transform:translateY(0); }
   .panel-cta::after{ content:" →"; }
 
-  /* ============ PANEL DECORATION (selection screen only) ============ */
-  .panel-decor{ position:absolute; inset:0; z-index:2; overflow:hidden; pointer-events:none; }
+  /* ============ DECORAÇÃO DOS PAINÉIS ============ */
+  .panel-decor{ position:absolute; inset:0; z-index:1; overflow:hidden; pointer-events:none; }
 
-  /* -- Decoração Persona: slashes diagonais + halftone, comum aos painéis -- */
   .panel .slash{
     position:absolute;
     background:var(--p-accent);
     clip-path:polygon(0 0, 100% 0, 78% 100%, 0% 100%);
-    mix-blend-mode:screen;
+    /* sem mix-blend-mode: em elementos animados fazia aparecer linhas finas nas arestas */
+    will-change:transform;
+    backface-visibility:hidden;
+    animation:slashPulse 6s ease-in-out infinite alternate;
+  }
+  .panel .slash:nth-of-type(2){ animation-delay:-3s; }
+  @keyframes slashPulse{
+    from{ transform:translate3d(0,0,0); }
+    to{ transform:translate3d(5%,0,0); }
   }
   .panel .halftone{
     position:absolute; inset:-10%;
@@ -221,7 +324,7 @@
     transform:rotate(-24deg);
   }
 
-  /* -- Exorcismus: cursed ink wisps -- */
+  /* Exorcismus: manchas de tinta amaldiçoada */
   .panel-exorcismus .wisp{
     position:absolute;
     width:70%; height:55%;
@@ -242,15 +345,263 @@
   }
   @keyframes wispDrift{ 0%{ transform:translate(0,0) scale(1); } 100%{ transform:translate(6%,5%) scale(1.2); } }
 
-  @media (max-width: 760px){
-    .panels{ flex-direction:column; min-height:auto; }
-    .panel{ min-height:34vh; border-right:none; border-bottom:1px solid rgba(255,255,255,0.06); flex-grow:1 !important; filter:grayscale(0.25) brightness(0.85); }
-    .panel-glyph{ font-size:3.4rem; }
-    .panel-tagline{ max-height:6rem; opacity:1; }
-    .panel-cta{ opacity:1; transform:none; }
+  /* Painel "em breve" */
+  .panel-soon{ cursor:default; }
+  .panel-soon .panel-art{ filter:grayscale(0.8) brightness(0.65); }
+  .panel-soon:hover .panel-art{ filter:grayscale(0.3) brightness(0.85); }
+  .panel-soon .panel-title{ letter-spacing:0.12em; }
+  .panel-soon .panel-glyph{ opacity:0.22; }
+
+  /* ============ VARIANTES DO PAINEL (quando está no sub-sistema) ============ */
+  /* Contos à lareira: brilho de fogueira no fundo */
+  .panel[data-variant="fire"] .panel-art::after{
+    content:"";
+    position:absolute; left:0; right:0; bottom:0; height:58%;
+    z-index:1;
+    background:radial-gradient(ellipse at 50% 125%, rgba(255,170,50,0.9) 0%, rgba(255,90,10,0.42) 40%, transparent 70%);
+    mix-blend-mode:screen;
+    transform-origin:50% 100%;
+    animation:fireGlow 1.8s ease-in-out infinite alternate;
+    pointer-events:none;
+  }
+  @keyframes fireGlow{
+    from{ opacity:0.55; transform:scaleY(0.92); }
+    to{ opacity:1; transform:scaleY(1.1); }
   }
 
-  /* ============ EXIT FLASH (before navigating away) ============ */
+  /* Reflexos de Milhares: noir a preto e branco */
+  .panel[data-variant="noir"] .panel-art,
+  .panel[data-variant="noir"]:hover .panel-art,
+  .panel[data-variant="noir"]:focus-within .panel-art{
+    filter:grayscale(1) contrast(1.15) brightness(0.9);
+  }
+
+  /* vidro partido por cima do fundo normal */
+  .panel-mirror{
+    position:absolute; inset:0; z-index:1;
+    opacity:0;
+    transition:opacity 0.45s ease;
+    pointer-events:none;
+  }
+  .panel-mirror svg{ width:100%; height:100%; display:block; }
+  .panel[data-variant="noir"] .panel-mirror{ opacity:1; }
+
+  .mirror-bg{ animation:shardGlint 7s ease-in-out infinite; }
+  @keyframes shardGlint{
+    0%, 100%{ opacity:1; }
+    50%{ opacity:0.72; }
+  }
+  .mirror-cracks{
+    fill:none;
+    stroke:#fff;
+    stroke-opacity:0.42;
+    stroke-width:1.2;
+    stroke-linecap:round;
+    vector-effect:non-scaling-stroke;
+  }
+  .panel[data-variant="noir"] .panel-art::after{
+    content:"";
+    position:absolute; z-index:1;
+    top:-20%; bottom:-20%; left:-60%;
+    width:40%;
+    background:linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transform:skewX(-20deg);
+    animation:sweep 6s ease-in-out infinite;
+    pointer-events:none;
+  }
+  @keyframes sweep{
+    0%, 55%{ left:-60%; }
+    100%{ left:140%; }
+  }
+
+  /* ============ QUADRADO DO OUTRO SISTEMA (com a rodinha de alternar) ============ */
+  .mini{
+    --mini-size:clamp(84px, 7.6vw, 116px);
+    position:relative;
+    flex:none;
+    width:var(--mini-size);
+    aspect-ratio:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    align-items:flex-start;
+    padding:0.45rem 0.45rem 0.5rem;
+    border:3px solid #fff;
+    overflow:hidden;
+    isolation:isolate;
+    pointer-events:auto;
+    cursor:pointer;
+    text-align:left;
+    color:#fff;
+    appearance:none;
+    -webkit-appearance:none;
+    transform:rotate(-5deg);
+    box-shadow:5px 5px 0 var(--m-shadow, #000);
+    transition:transform 0.28s cubic-bezier(.3,1.6,.5,1), box-shadow 0.28s ease;
+    animation:miniIdle 4.5s ease-in-out infinite alternate;
+  }
+  .mini:hover, .mini:focus-visible{
+    transform:rotate(0deg) scale(1.1);
+    box-shadow:8px 8px 0 var(--m-shadow, #000);
+    animation-play-state:paused;
+    outline:none;
+  }
+  .mini:focus-visible{ outline:3px solid #fff; outline-offset:3px; }
+  .mini:active{ transform:rotate(0deg) scale(0.97); }
+  @keyframes miniIdle{
+    from{ translate:0 0; }
+    to{ translate:0 -4px; }
+  }
+
+  /* a rodinha com setas */
+  .mini-wheel{
+    position:relative; z-index:3;
+    flex:none;
+    width:clamp(24px, 2.5vw, 30px);
+    aspect-ratio:1;
+    border-radius:50%;
+    background:#fff;
+    color:#0b0b0d;
+    border:2px solid #0b0b0d;
+    display:grid;
+    place-items:center;
+    box-shadow:2px 2px 0 rgba(0,0,0,0.55);
+    transition:transform 0.3s cubic-bezier(.3,1.6,.5,1);
+  }
+  .mini:hover .mini-wheel, .mini:focus-visible .mini-wheel{ transform:rotate(-35deg) scale(1.12); }
+  .mini-wheel svg{
+    width:64%; height:64%;
+    transition:transform 0.55s cubic-bezier(.65,0,.35,1);
+  }
+
+  .mini-name{
+    position:relative; z-index:3;
+    font-family:'Anton', sans-serif;
+    font-size:clamp(0.78rem, 1.1vw, 1rem);
+    line-height:1;
+    text-transform:uppercase;
+    letter-spacing:0.01em;
+  }
+
+  /* -- Contos à lareira: tons de fogo -- */
+  .mini[data-look="fire"]{
+    --m-shadow:#3a0a05;
+    border-color:#fff3d6;
+    background:radial-gradient(circle at 50% 115%, #ffd23f 0 14%, #ff8a1f 38%, #d63a0c 66%, #4a0e06 100%);
+  }
+  .mini[data-look="fire"] .mini-name{ color:#fff; text-shadow:2px 2px 0 #3a0a05; }
+  .mini[data-look="fire"]::before{
+    content:"";
+    position:absolute; z-index:1;
+    left:26%; bottom:-8%;
+    width:48%; height:66%;
+    background:radial-gradient(ellipse at 50% 80%, #fff6c2 0%, #ffc233 38%, rgba(255,120,20,0) 72%);
+    border-radius:50% 50% 45% 45% / 72% 72% 28% 28%;
+    transform-origin:50% 100%;
+    animation:flame 1.3s ease-in-out infinite alternate;
+  }
+  .mini[data-look="fire"]::after{
+    content:"";
+    position:absolute; inset:0; z-index:2;
+    background-image:radial-gradient(rgba(58,10,5,0.55) 1px, transparent 1.5px);
+    background-size:6px 6px;
+    -webkit-mask-image:linear-gradient(200deg, #000 0%, transparent 45%);
+    mask-image:linear-gradient(200deg, #000 0%, transparent 45%);
+    pointer-events:none;
+  }
+  @keyframes flame{
+    0%{ transform:scale(1, 0.92) skewX(-4deg); opacity:0.9; }
+    50%{ transform:scale(1.06, 1.05) skewX(3deg); opacity:1; }
+    100%{ transform:scale(0.96, 1.12) skewX(-2deg); opacity:0.92; }
+  }
+
+  /* -- Reflexos de Milhares: noir a preto e branco -- */
+  .mini[data-look="noir"]{
+    --m-shadow:#f3f3f3;
+    border-color:#fff;
+    background:
+      linear-gradient(115deg, transparent 0 50%, #fff 50% 63%, transparent 63%),
+      radial-gradient(rgba(255,255,255,0.22) 1px, transparent 1.4px) 0 0 / 6px 6px,
+      #0a0a0a;
+    filter:grayscale(1) contrast(1.1);
+  }
+  .mini[data-look="noir"] .mini-name{ color:#fff; mix-blend-mode:difference; }
+  .mini[data-look="noir"]::before{
+    content:"";
+    position:absolute; z-index:2;
+    top:-20%; bottom:-20%; left:-60%;
+    width:40%;
+    background:linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+    transform:skewX(-20deg);
+    animation:sweep 5.5s ease-in-out infinite;
+    pointer-events:none;
+  }
+
+  /* -- Este de lá, oeste de cá (quando o painel está no sub-sistema) -- */
+  .mini[data-look="gold"]{
+    --m-shadow:#141a08;
+    border-color:#fff6d8;
+    background:linear-gradient(135deg, #f2c14e 0%, #d9b224 38%, #1d2410 100%);
+  }
+  .mini[data-look="gold"] .mini-name{ color:#fff; text-shadow:2px 2px 0 #141a08; }
+
+  /* -- Weird Place (quando o painel está no sub-sistema) -- */
+  .mini[data-look="violet"]{
+    --m-shadow:#070a24;
+    border-color:#e6e1ff;
+    background:linear-gradient(135deg, #8a7bff 0%, #4a3df0 40%, #0e1236 100%);
+  }
+  .mini[data-look="violet"] .mini-name{ color:#fff; text-shadow:2px 2px 0 #070a24; }
+
+  .mini[data-look="gold"]::before,
+  .mini[data-look="violet"]::before{
+    content:"";
+    position:absolute; inset:0; z-index:1;
+    background:linear-gradient(115deg, transparent 0 55%, rgba(255,255,255,0.25) 55% 66%, transparent 66%);
+    pointer-events:none;
+  }
+  .mini[data-look="gold"]::after,
+  .mini[data-look="violet"]::after{
+    content:"";
+    position:absolute; inset:0; z-index:2;
+    background-image:radial-gradient(rgba(0,0,0,0.4) 1px, transparent 1.5px);
+    background-size:6px 6px;
+    -webkit-mask-image:linear-gradient(200deg, #000 0%, transparent 45%);
+    mask-image:linear-gradient(200deg, #000 0%, transparent 45%);
+    pointer-events:none;
+  }
+
+  /* varrimento diagonal ao alternar */
+  .panel-wipe{
+    position:absolute; inset:0; z-index:5;
+    pointer-events:none;
+    clip-path:polygon(-30% 0, -30% 0, -55% 100%, -55% 100%);
+  }
+  .panel-wipe.go{ animation:wipe 0.54s cubic-bezier(.65,0,.35,1) forwards; }
+  @keyframes wipe{
+    0%{ clip-path:polygon(-30% 0, -30% 0, -55% 100%, -55% 100%); }
+    50%{ clip-path:polygon(-30% 0, 135% 0, 110% 100%, -55% 100%); }
+    100%{ clip-path:polygon(135% 0, 135% 0, 110% 100%, 110% 100%); }
+  }
+
+  /* ============ MOBILE ============ */
+  @media (max-width: 900px){
+    .hub-top .count{ display:none; }
+  }
+  @media (max-width: 760px){
+    .hub-top{ padding:1rem 1.2rem; }
+    .panels{ flex-direction:column; min-height:auto; }
+    .panel{ min-height:34vh; border-right:none; border-bottom:1px solid rgba(255,255,255,0.06); flex-grow:1 !important; }
+    .panel-art{ filter:grayscale(0.25) brightness(0.85); }
+    .panel-soon .panel-art{ filter:grayscale(0.7) brightness(0.7); }
+    .panel-glyph{ font-size:3.4rem; }
+    .panel-tagline{ max-height:9rem; opacity:1; }
+    .panel-cta{ opacity:1; transform:none; }
+    .panel-title::before{ transform:skewX(-14deg) scaleX(1); }
+    .mini{ --mini-size:96px; }
+  }
+
+  /* ============ FLASH DE SAÍDA ============ */
   #exit-flash{
     position:fixed; inset:0; z-index:999;
     pointer-events:none;
@@ -274,95 +625,294 @@
     </div>
 
     <div class="panels">
-      <a class="panel panel-oeste" href="oeste.html" data-exit-color="#f2c14e" data-sound="sounds/persona-5-real-notification.mp3"
-         aria-label="Escolher Este de lá, para oeste de cá"
-         style="--p-bg:#1d2410; --p-primary:#d9b224; --p-accent:#f2c14e;">
-        <div class="panel-glow"></div>
-        <div class="panel-decor">
-          <div class="halftone"></div>
-          <div class="slash" style="left:-10%; top:-20%; width:38%; height:160%;"></div>
-          <div class="slash" style="left:22%; top:-20%; width:14%; height:160%; opacity:0.55;"></div>
-          <div class="stripe" style="left:-20%; top:28%; width:150%;"></div>
-          <div class="stripe" style="left:-20%; top:64%; width:150%; opacity:0.4;"></div>
-        </div>
-        <span class="panel-glyph">ELOC</span>
-        <div class="panel-content">
-          <span class="panel-index">Criado por Toregui</span>
-          <div class="panel-title">Este de lá, oeste de cá</div>
-          <p class="panel-tagline">Ainda por Escrever</p>
-          <span class="panel-cta">Entrar no sistema</span>
-        </div>
-      </a>
 
-      <a class="panel panel-nirvana" href="nirvana.html" data-exit-color="#ff6ec7" data-sound="sounds/zelda-guardian.mp3"
-         aria-label="Escolher Fall of Nirvana"
-         style="--p-bg:#191038; --p-primary:#8b3ef7; --p-accent:#ff6ec7;">
-        <div class="panel-glow"></div>
-        <div class="panel-decor">
-          <div class="halftone"></div>
-          <div class="slash" style="left:-10%; top:-20%; width:38%; height:160%;"></div>
-          <div class="slash" style="left:22%; top:-20%; width:14%; height:160%; opacity:0.55;"></div>
-          <div class="stripe" style="left:-20%; top:28%; width:150%;"></div>
-          <div class="stripe" style="left:-20%; top:64%; width:150%; opacity:0.4;"></div>
+      <div class="panel panel-oeste" data-system="oeste" data-state="main" style="--i:0; --p-bg:#1d2410; --p-primary:#d9b224; --p-accent:#f2c14e;">
+        <div class="panel-art">
+          <div class="panel-glow"></div>
+          <div class="panel-decor">
+            <div class="halftone"></div>
+            <div class="slash" style="left:-10%; top:-20%; width:38%; height:160%;"></div>
+            <div class="slash" style="left:22%; top:-20%; width:14%; height:160%; opacity:0.55;"></div>
+            <div class="stripe" style="left:-20%; top:28%; width:150%;"></div>
+            <div class="stripe" style="left:-20%; top:64%; width:150%; opacity:0.4;"></div>
+          </div>
+          <span class="panel-glyph">ELOC</span>
         </div>
-        <span class="panel-glyph">FON</span>
+        <a class="panel-link" href="oeste.html" data-exit-color="#f2c14e" data-sound="sounds/persona-5-real-notification.mp3"
+           aria-label="Escolher Este de lá, oeste de cá"></a>
         <div class="panel-content">
-          <span class="panel-index">Criado por Hades</span>
-          <div class="panel-title">Fall of Nirvana</div>
-          <p class="panel-tagline">Ainda por Escrever</p>
-          <span class="panel-cta">Entrar no sistema</span>
+          <div class="panel-text">
+            <span class="panel-index">Criado por Toregui</span>
+            <div class="panel-title">Este de lá, oeste de cá</div>
+            <p class="panel-tagline">Ainda por Escrever</p>
+            <span class="panel-cta">Entrar no sistema</span>
+          </div>
+          <button class="mini" type="button" data-look="fire" aria-label="Alternar para Contos à lareira">
+            <span class="mini-wheel">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+                <path d="M21 3v5h-5"/>
+                <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+                <path d="M8 16H3v5"/>
+              </svg>
+            </span>
+            <span class="mini-name">Contos à lareira</span>
+          </button>
         </div>
-      </a>
+        <div class="panel-wipe"></div>
+      </div>
 
-      <a class="panel panel-exorcismus" href="exorcismus.html" data-exit-color="#ff2740" data-sound="sounds/ato-wa-tanomimasu.mp3"
-         aria-label="Escolher Exorcismus"
-         style="--p-bg:#170505; --p-primary:#e0102a; --p-accent:#ff2740;">
-        <div class="panel-glow"></div>
-        <div class="panel-decor">
-          <div class="wisp wisp-a"></div>
-          <div class="wisp wisp-b"></div>
-          <div class="halftone"></div>
-          <div class="slash" style="left:-10%; top:-20%; width:38%; height:160%;"></div>
-          <div class="slash" style="left:22%; top:-20%; width:14%; height:160%; opacity:0.55;"></div>
-          <div class="stripe" style="left:-20%; top:28%; width:150%;"></div>
-          <div class="stripe" style="left:-20%; top:64%; width:150%; opacity:0.4;"></div>
+      <div class="panel panel-nirvana" data-system="nirvana" data-state="main" style="--i:1; --p-bg:#0e1236; --p-primary:#4a3df0; --p-accent:#8a7bff;">
+        <div class="panel-art">
+          <div class="panel-glow"></div>
+          <div class="panel-decor">
+            <div class="halftone"></div>
+            <div class="slash" style="left:-10%; top:-20%; width:38%; height:160%;"></div>
+            <div class="slash" style="left:22%; top:-20%; width:14%; height:160%; opacity:0.55;"></div>
+            <div class="stripe" style="left:-20%; top:28%; width:150%;"></div>
+            <div class="stripe" style="left:-20%; top:64%; width:150%; opacity:0.4;"></div>
+          </div>
+ 
+          <div class="panel-mirror" aria-hidden="true">
+            <svg viewBox="0 0 400 600" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="glassA" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#fff" stop-opacity="0.2"/>
+                  <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+                </linearGradient>
+                <linearGradient id="glassB" x1="1" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="#fff" stop-opacity="0"/>
+                  <stop offset="1" stop-color="#fff" stop-opacity="0.16"/>
+                </linearGradient>
+              </defs>
+
+              <polygon class="mirror-bg" points="0,0 130,0 120,140 0,160" fill="url(#glassA)"/>
+              <polygon class="mirror-bg" style="animation-delay:-2s" points="130,0 290,0 300,120 210,250 120,140" fill="#fff" fill-opacity="0.05"/>
+              <polygon class="mirror-bg" points="290,0 400,0 400,180 300,120" fill="url(#glassB)"/>
+              <polygon class="mirror-bg" style="animation-delay:-4s" points="300,120 400,180 400,430 330,300 210,250" fill="#000" fill-opacity="0.22"/>
+              <polygon class="mirror-bg" points="330,300 400,430 400,600 300,600 250,400" fill="url(#glassA)"/>
+              <polygon class="mirror-bg" style="animation-delay:-5s" points="210,250 330,300 250,400 110,360" fill="#fff" fill-opacity="0.08"/>
+              <polygon class="mirror-bg" points="250,400 300,600 120,600 110,360" fill="#000" fill-opacity="0.2"/>
+              <polygon class="mirror-bg" style="animation-delay:-3s" points="110,360 120,600 0,600 0,420" fill="url(#glassB)"/>
+              <polygon class="mirror-bg" points="0,160 120,140 210,250 110,360 0,420" fill="#fff" fill-opacity="0.04"/>
+
+              <path d="M210 250 L120 140 M210 250 L300 120 M210 250 L330 300 M210 250 L110 360 M330 300 L250 400 M250 400 L110 360 M120 140 L130 0 M120 140 L0 160 M300 120 L290 0 M300 120 L400 180 M330 300 L400 430 M250 400 L300 600 M110 360 L120 600 M110 360 L0 420"
+                    fill="none" stroke="#000" stroke-opacity="0.55" stroke-width="2.6" stroke-linecap="round" vector-effect="non-scaling-stroke" transform="translate(1.5 1.5)"/>
+              <path class="mirror-cracks" d="M210 250 L120 140 M210 250 L300 120 M210 250 L330 300 M210 250 L110 360 M330 300 L250 400 M250 400 L110 360 M120 140 L130 0 M120 140 L0 160 M300 120 L290 0 M300 120 L400 180 M330 300 L400 430 M250 400 L300 600 M110 360 L120 600 M110 360 L0 420"/>
+              <path d="M165 195 L148 172 M255 185 L272 158 M272 276 L302 288 M160 306 L138 332 M215 326 L226 354 M205 130 L196 98 M350 240 L376 252"
+                    fill="none" stroke="#fff" stroke-opacity="0.26" stroke-width="0.9" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+            </svg>
+          </div>
+          <span class="panel-glyph">WP</span>
         </div>
-        <span class="panel-glyph">E</span>
+        <a class="panel-link" href="nirvana.html" data-exit-color="#8a7bff" data-sound="sounds/zelda-guardian.mp3"
+           aria-label="Escolher Weird Place"></a>
         <div class="panel-content">
-          <span class="panel-index">Criado por Luxx</span>
-          <div class="panel-title">Exorcismus</div>
-          <p class="panel-tagline">Exorcismus é um RPG de mesa ambientado no universo de Jujutsu Kaisen, com mecânicas inspiradas no Ordem Paranormal.</p>
-          <span class="panel-cta">Entrar no sistema</span>
+          <div class="panel-text">
+            <span class="panel-index">Criado por Hades</span>
+            <div class="panel-title">Weird Place</div>
+            <p class="panel-tagline">Ainda por Escrever</p>
+            <span class="panel-cta">Entrar no sistema</span>
+          </div>
+          <button class="mini" type="button" data-look="noir" aria-label="Alternar para Reflexos de Milhares">
+            <span class="mini-wheel">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+                <path d="M21 3v5h-5"/>
+                <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+                <path d="M8 16H3v5"/>
+              </svg>
+            </span>
+            <span class="mini-name">Reflexos de Milhares</span>
+          </button>
         </div>
-      </a>
-    </div>
+        <div class="panel-wipe"></div>
+      </div>
 
-    <div class="hub-bottom">
-      <span class="eyebrow">Escolhe <b>um sistema</b> para criar fichas e explorar as regras</span>
+      <div class="panel panel-exorcismus" style="--i:2; --p-bg:#170505; --p-primary:#e0102a; --p-accent:#ff2740;">
+        <div class="panel-art">
+          <div class="panel-glow"></div>
+          <div class="panel-decor">
+            <div class="wisp wisp-a"></div>
+            <div class="wisp wisp-b"></div>
+            <div class="halftone"></div>
+            <div class="slash" style="left:-10%; top:-20%; width:38%; height:160%;"></div>
+            <div class="slash" style="left:22%; top:-20%; width:14%; height:160%; opacity:0.55;"></div>
+            <div class="stripe" style="left:-20%; top:28%; width:150%;"></div>
+            <div class="stripe" style="left:-20%; top:64%; width:150%; opacity:0.4;"></div>
+          </div>
+          <span class="panel-glyph">E</span>
+        </div>
+        <a class="panel-link" href="exorcismus.html" data-exit-color="#ff2740" data-sound="sounds/ato-wa-tanomimasu.mp3"
+           aria-label="Escolher Exorcismus"></a>
+        <div class="panel-content">
+          <div class="panel-text">
+            <span class="panel-index">Criado por Luxx</span>
+            <div class="panel-title">Exorcismus</div>
+            <p class="panel-tagline">Exorcismus é um RPG de mesa ambientado no universo de Jujutsu Kaisen, com mecânicas inspiradas no Ordem Paranormal.</p>
+            <span class="panel-cta">Entrar no sistema</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-kinetika" style="--i:3; --p-bg:#1a0630; --p-primary:#5a1a9c; --p-accent:#a24bff;">
+        <div class="panel-art">
+          <div class="panel-glow"></div>
+          <div class="panel-decor">
+            <div class="halftone"></div>
+            <div class="slash" style="left:-10%; top:-20%; width:38%; height:160%;"></div>
+            <div class="slash" style="left:22%; top:-20%; width:14%; height:160%; opacity:0.55;"></div>
+            <div class="stripe" style="left:-20%; top:28%; width:150%;"></div>
+            <div class="stripe" style="left:-20%; top:64%; width:150%; opacity:0.4;"></div>
+          </div>
+          <span class="panel-glyph">K</span>
+        </div>
+        <a class="panel-link" href="kinetika.html" data-exit-color="#a24bff"
+           aria-label="Escolher Kinetika"></a>
+        <div class="panel-content">
+          <div class="panel-text">
+            <span class="panel-index">Criado por MMGT</span>
+            <div class="panel-title">Kinetika</div>
+            <p class="panel-tagline">Kinetika é um sistema de RPG cujo mundo dita que a morte nunca é bela, mesmo que necessária.</p>
+            <span class="panel-cta">Entrar no sistema</span>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
   <div id="exit-flash"></div>
 
 <script>
-  // ---- quick colour flash + system sound before navigating to a system page ----
+  const hub = document.getElementById('hub');
+  const panelsBox = document.querySelector('.panels');
   const exitFlash = document.getElementById('exit-flash');
-  document.querySelectorAll('.panel[href]').forEach(panel => {
-    panel.addEventListener('click', (e) => {
+
+  const SYSTEMS = {
+    oeste: {
+      main: {
+        name:'Este de lá, oeste de cá', index:'Criado por Toregui', glyph:'ELOC',
+        tagline:'Ainda por Escrever',
+        href:'oeste.html', exit:'#f2c14e', sound:'sounds/persona-5-real-notification.mp3',
+        bg:'#1d2410', primary:'#d9b224', accent:'#f2c14e', variant:'', look:'gold'
+      },
+      alt: {
+        name:'Contos à lareira', index:'Criado por Toregui', glyph:'CAL',
+        tagline:'Ainda por Escrever',
+        href:'contos-a-lareira.html', exit:'#ff7a18', sound:'',
+        bg:'#2a0c04', primary:'#d63a0c', accent:'#ff7a18', variant:'fire', look:'fire'
+      }
+    },
+    nirvana: {
+      main: {
+        name:'Weird Place', index:'Criado por Hades', glyph:'WP',
+        tagline:'Ainda por Escrever',
+        href:'nirvana.html', exit:'#8a7bff', sound:'sounds/zelda-guardian.mp3',
+        bg:'#0e1236', primary:'#4a3df0', accent:'#8a7bff', variant:'', look:'violet'
+      },
+      alt: {
+        name:'Reflexos de Milhares', index:'Criado por Hades', glyph:'RM',
+        tagline:'Ainda por Escrever',
+        href:'reflexos-de-milhares.html', exit:'#f3f3f3', sound:'',
+        bg:'#0a0a0a', primary:'#8d8d95', accent:'#f3f3f3', variant:'noir', look:'noir'
+      }
+    }
+  };
+
+  function setBar(panel){
+    const accent = getComputedStyle(panel).getPropertyValue('--p-accent').trim();
+    if(accent) hub.style.setProperty('--bar', accent);
+  }
+  function resetBar(){
+    hub.style.removeProperty('--bar');
+  }
+  document.querySelectorAll('.panel').forEach(panel => {
+    panel.addEventListener('mouseenter', () => setBar(panel));
+    panel.addEventListener('focusin', () => setBar(panel));
+    panel.addEventListener('focusout', (e) => {
+      if(!panel.contains(e.relatedTarget)) resetBar();
+    });
+  });
+  panelsBox.addEventListener('mouseleave', resetBar);
+
+  function applyState(panel, key){
+    const group = SYSTEMS[panel.dataset.system];
+    const cfg = group[key];
+    const other = group[key === 'main' ? 'alt' : 'main'];
+
+    panel.dataset.state = key;
+    panel.dataset.variant = cfg.variant;
+    panel.style.setProperty('--p-bg', cfg.bg);
+    panel.style.setProperty('--p-primary', cfg.primary);
+    panel.style.setProperty('--p-accent', cfg.accent);
+
+    panel.querySelector('.panel-index').textContent = cfg.index;
+    panel.querySelector('.panel-title').textContent = cfg.name;
+    panel.querySelector('.panel-tagline').textContent = cfg.tagline;
+    panel.querySelector('.panel-glyph').textContent = cfg.glyph;
+
+    const link = panel.querySelector('.panel-link');
+    link.setAttribute('href', cfg.href);
+    link.setAttribute('data-exit-color', cfg.exit);
+    if(cfg.sound) link.setAttribute('data-sound', cfg.sound); else link.removeAttribute('data-sound');
+    link.setAttribute('aria-label', 'Escolher ' + cfg.name);
+
+    const mini = panel.querySelector('.mini');
+    mini.dataset.look = other.look;
+    mini.querySelector('.mini-name').textContent = other.name;
+    mini.setAttribute('aria-label', 'Alternar para ' + other.name);
+
+    if(panel.matches(':hover') || panel.matches(':focus-within')) setBar(panel);
+  }
+
+  document.querySelectorAll('.panel[data-system]').forEach(panel => {
+    const btn = panel.querySelector('.mini');
+    const icon = btn.querySelector('.mini-wheel svg');
+    const wipe = panel.querySelector('.panel-wipe');
+    let rotation = 0;
+    let busy = false;
+
+    btn.addEventListener('click', (e) => {
       e.preventDefault();
-      const soundSrc = panel.getAttribute('data-sound');
-      if(soundSrc){
+      if(busy) return;
+      busy = true;
+
+      const next = panel.dataset.state === 'main' ? 'alt' : 'main';
+      wipe.style.background = SYSTEMS[panel.dataset.system][next].accent;
+      wipe.classList.remove('go');
+      void wipe.offsetWidth;           
+      wipe.classList.add('go');
+
+      rotation += 180;
+      icon.style.transform = 'rotate(' + rotation + 'deg)';
+
+      setTimeout(() => applyState(panel, next), 260);  
+      setTimeout(() => { wipe.classList.remove('go'); busy = false; }, 560);
+    });
+  });
+
+  document.querySelectorAll('.panel-link').forEach(link => {
+    link.addEventListener('click', (e) => {
+      if (e.defaultPrevented || e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+      e.preventDefault();
+
+      const soundSrc = link.getAttribute('data-sound');
+      if (soundSrc) {
         const a = new Audio(soundSrc);
         a.volume = 0.7;
         a.play().catch(() => {});
       }
-      const url = panel.getAttribute('href');
-      const color = panel.getAttribute('data-exit-color') || '#ffffff';
+
+      const url = link.getAttribute('href');
+      const color = link.getAttribute('data-exit-color') || '#ffffff';
       exitFlash.style.setProperty('--exit-color', color);
       exitFlash.classList.add('go');
-      setTimeout(() => { window.location.href = url; }, 620);
+      setTimeout(() => { window.location.href = url; }, 460);
     });
   });
+
+  window.addEventListener('pageshow', () => exitFlash.classList.remove('go'));
 </script>
 </body>
 </html>
