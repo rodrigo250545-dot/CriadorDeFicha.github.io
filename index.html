@@ -6,7 +6,7 @@
 <title>Criador de Fichas</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Nunito:wght@400;600;700;800&family=Anton&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   *{ margin:0; padding:0; box-sizing:border-box; }
   html,body{ height:100%; }
@@ -571,6 +571,36 @@
     pointer-events:none;
   }
 
+
+  /* ============ ELOC: estética do próprio criador (Persona + Genshin) ============ */
+  .panel[data-system="oeste"][data-state="main"] .panel-art{
+    background:
+      radial-gradient(1.5px 1.5px at 14% 24%,rgba(255,244,214,.9),transparent),
+      radial-gradient(2px 2px at 78% 18%,rgba(255,244,214,.8),transparent),
+      radial-gradient(1.5px 1.5px at 38% 62%,rgba(255,244,214,.7),transparent),
+      radial-gradient(2px 2px at 88% 52%,rgba(255,244,214,.8),transparent),
+      radial-gradient(1.5px 1.5px at 24% 84%,rgba(255,244,214,.6),transparent),
+      radial-gradient(ellipse at 50% -10%,rgba(120,140,185,.45),transparent 60%),
+      linear-gradient(180deg,rgba(0,0,0,0) 0%,rgba(0,0,0,.55) 100%),
+      #1b2031;
+  }
+  .panel[data-system="oeste"][data-state="main"] .slash{ background:linear-gradient(180deg,#8f7f5c,#4f5872); opacity:.55; }
+  .panel[data-system="oeste"][data-state="main"] .slash:nth-of-type(2){ opacity:.3; }
+  .panel[data-system="oeste"][data-state="main"] .panel-glyph{ font-family:'Marcellus',serif; -webkit-text-stroke:1.5px #d3bc8e; color:transparent; }
+  .panel[data-system="oeste"][data-state="main"] .panel-index{ font-family:'Nunito',sans-serif; font-weight:800; background:#ece5d8; color:#2f3650; }
+  .panel[data-system="oeste"][data-state="main"] .panel-index::before{ content:"◆ "; color:#b89d6a; }
+  .panel[data-system="oeste"][data-state="main"] .panel-title{ font-family:'Marcellus',serif; font-weight:400; letter-spacing:.02em; text-shadow:3px 3px 0 rgba(20,24,40,.7); }
+  .panel[data-system="oeste"][data-state="main"] .panel-title::before{ background:#d3bc8e; opacity:.8; }
+  .panel[data-system="oeste"][data-state="main"] .panel-title::after{ content:" ◆"; font-size:.45em; color:#d3bc8e; vertical-align:middle; }
+  .panel[data-system="oeste"][data-state="main"] .panel-tagline{ font-family:'Nunito',sans-serif; }
+  .panel[data-system="oeste"][data-state="main"] .panel-cta{ font-family:'Nunito',sans-serif; font-weight:800; color:#ece5d8; }
+  .panel[data-system="oeste"][data-state="main"] .halftone{ background-image:radial-gradient(rgba(236,229,216,.5) 1px,transparent 1.4px); }
+  .mini[data-look="gold"]{
+    --m-shadow:#141a2c; border-color:#ece5d8;
+    background:linear-gradient(135deg,#d3bc8e 0%,#4f5872 45%,#1b2031 100%);
+  }
+  .mini[data-look="gold"] .mini-name{ font-family:'Marcellus',serif; text-shadow:2px 2px 0 #141a2c; }
+
   /* varrimento diagonal ao alternar */
   .panel-wipe{
     position:absolute; inset:0; z-index:5;
@@ -626,7 +656,7 @@
 
     <div class="panels">
 
-      <div class="panel panel-oeste" data-system="oeste" data-state="main" style="--i:0; --p-bg:#1d2410; --p-primary:#d9b224; --p-accent:#f2c14e;">
+      <div class="panel panel-oeste" data-system="oeste" data-state="main" style="--i:0; --p-bg:#1b2031; --p-primary:#4f5872; --p-accent:#d3bc8e;">
         <div class="panel-art">
           <div class="panel-glow"></div>
           <div class="panel-decor">
@@ -638,7 +668,7 @@
           </div>
           <span class="panel-glyph">ELOC</span>
         </div>
-        <a class="panel-link" href="oeste.html" data-exit-color="#f2c14e" data-sound="sounds/persona-5-real-notification.mp3"
+        <a class="panel-link" href="oeste.html" data-exit-color="#ece5d8" data-sound="sounds/persona-5-real-notification.mp3"
            aria-label="Escolher Este de lá, oeste de cá"></a>
         <div class="panel-content">
           <div class="panel-text">
@@ -794,8 +824,8 @@
       main: {
         name:'Este de lá, oeste de cá', index:'Criado por Toregui', glyph:'ELOC',
         tagline:'Ainda por Escrever',
-        href:'oeste.html', exit:'#f2c14e', sound:'sounds/persona-5-real-notification.mp3',
-        bg:'#1d2410', primary:'#d9b224', accent:'#f2c14e', variant:'', look:'gold'
+        href:'oeste.html', exit:'#ece5d8', sound:'sounds/persona-5-real-notification.mp3',
+        bg:'#1b2031', primary:'#4f5872', accent:'#d3bc8e', variant:'', look:'gold'
       },
       alt: {
         name:'Contos à lareira', index:'Criado por Toregui', glyph:'CAL',
